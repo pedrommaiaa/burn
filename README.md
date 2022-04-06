@@ -1,16 +1,9 @@
 # Burn
 
-Burn is the bridge between the [Solmate](https://github.com/Rari-Capital/solmate)'s optimizations 
+Burn is the bridge between [Solmate](https://github.com/Rari-Capital/solmate)'s optimizations 
 and [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)'s user-friendliness.
 
 ## Development
-
-**Setup**
-```bash
-make
-# OR #
-make setup
-```
 
 **Building**
 ```bash
@@ -45,7 +38,6 @@ NOTE: these scripts will prompt you for the contract name and deployed addresses
 - [foundry](https://github.com/gakonst/foundry)
 - [solmate](https://github.com/Rari-Capital/solmate)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
-- [forge-std](https://github.com/brockelmore/forge-std)
 
 ## Disclaimer
 
