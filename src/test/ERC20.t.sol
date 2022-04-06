@@ -6,16 +6,15 @@ import {DSTestPlus} from "./utils/DSTestPlus.sol";
 import {ERC20Token} from "../implementations/ERC20.sol";
 
 contract ERC20Test is DSTestPlus {
-    ERC20Token token;
+    ERC20Token internal token;
 
     function setUp() public {
-        token = new ERC20Token("Token", "TKN", 18);
+        token = new ERC20Token("Token", "TKN");
     }
 
     function testMetadata() public {
         assertEq(token.name(), "Token");
         assertEq(token.symbol(), "TKN");
-        assertEq(token.decimals(), 18);
     }
 
     function testMint() public {
@@ -112,18 +111,14 @@ contract ERC20Test is DSTestPlus {
         token.transferFrom(address(from), address(0xBEEF), 1e18);
     }
 
-    function testMetadata(
-        string calldata name,
-        string calldata symbol,
-        uint8 decimals
-    ) public {
-        ERC20Token tkn = new ERC20Token(name, symbol, decimals);
+    function testMetadata(string calldata name, string calldata symbol) public {
+        ERC20Token tkn = new ERC20Token(name, symbol);
         assertEq(tkn.name(), name);
         assertEq(tkn.symbol(), symbol);
-        assertEq(tkn.decimals(), decimals);
     }
 
     function testMint(address from, uint256 amount) public {
+        cheats.assume(from != address(0));
         token.mint(from, amount);
 
         assertEq(token.totalSupply(), amount);
@@ -136,6 +131,7 @@ contract ERC20Test is DSTestPlus {
         uint256 burnAmount
     ) public {
         cheats.assume(mintAmount > burnAmount);
+        cheats.assume(from != address(0));
 
         token.mint(from, mintAmount);
 
@@ -147,12 +143,14 @@ contract ERC20Test is DSTestPlus {
     }
 
     function testApprove(address to, uint256 amount) public {
+        cheats.assume(to != address(0));
         assertTrue(token.approve(to, amount));
 
         assertEq(token.allowance(address(this), to), amount);
     }
 
     function testTransfer(address from, uint256 amount) public {
+        cheats.assume(from != address(0));
         token.mint(address(this), amount);
 
         assertTrue(token.transfer(from, amount));
@@ -171,6 +169,7 @@ contract ERC20Test is DSTestPlus {
         uint256 approval,
         uint256 amount
     ) public {
+        cheats.assume(to != address(0));
         cheats.assume(approval > amount);
 
         address from = address(0xABCD);

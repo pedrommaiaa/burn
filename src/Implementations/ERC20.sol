@@ -4,11 +4,7 @@ pragma solidity >=0.8.4 < 0.9.0;
 import {ERC20} from "../tokens/ERC20/ERC20.sol";
 
 contract ERC20Token is ERC20 {
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals
-    ) ERC20(_name, _symbol, _decimals) {}
+    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {}
 
     function mint(address to, uint256 value) public {
         _mint(to, value);
