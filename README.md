@@ -1,8 +1,7 @@
-# burn
+# Burn
 
-Do you want the optimizations from [Solmate](https://github.com/Rari-Capital/solmate) and the 
-user-friendliness  of [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)? 
-Then burn is for you!
+Burn is the bridge between the [Solmate](https://github.com/Rari-Capital/solmate)'s optimizations 
+and [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)'s user-friendliness.
 
 ## Development
 

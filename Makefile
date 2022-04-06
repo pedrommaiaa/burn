@@ -20,4 +20,4 @@ test :; forge clean && forge test --optimize --optimize-runs 1000000 -v
 lint:; prettier --write src/**/*.sol && prettier --write src/*.sol
 
 # Generate Gas Snapshots
-snapshot:; forge clean && forge snapshot --optimize --optimize-runs 1000000
+snap:; forge clean && forge snapshot --optimize --optimize-runs 1000000

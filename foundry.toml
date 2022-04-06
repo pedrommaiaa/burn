@@ -6,8 +6,8 @@
 [default]
 # Sets the concrete solc version to use
 # This overrides the `auto_detect_solc` value
-solc_version = '0.8.12'
-auto_detect_solc = false
+#solc_version = '0.8.12'
+auto_detect_solc = true
 # Increase optimizer_runs
 optimizer = true
 optimizer_runs = 1_000
@@ -16,7 +16,6 @@ fuzz_runs = 1_000
 # Configure remappings
 remappings = [
   "@ds-test=lib/ds-test/src/",
-  "@std=lib/forge-std/src/",
 ]
 
 # Extreme Fuzzing CI Profile :P

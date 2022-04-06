@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.12;
+pragma solidity >=0.8.4 < 0.9.0;
 
 /// @notice A slim logging utility
 contract XConsole {
