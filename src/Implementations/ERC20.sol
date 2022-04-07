@@ -6,11 +6,11 @@ import {ERC20} from "../tokens/ERC20/ERC20.sol";
 contract ERC20Token is ERC20 {
     constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {}
 
-    function mint(address to, uint256 value) public {
-        _mint(to, value);
+    function mint(address to, uint256 amount) public {
+        _mint(to, amount);
     }
 
-    function burn(uint256 value) public {
-        _burn(msg.sender, value);
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
     }
 }
