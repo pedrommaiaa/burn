@@ -4,18 +4,20 @@ pragma solidity >=0.8.4 < 0.9.0;
 error InsufficiantBalance(address user, uint256 amount);
 error ApproveSpenderZeroAddress();
 error TransferFromZeroAddress();
+error Permit_deadline_expired();
 error TransferToZeroAddress();
 error InsufficientAllowance();
 error BurnZeroAddress();
 error MintZeroAddress();
+error Invalid_Signer();
 
-/// @title Standard ERC20 Token
+/// @title Standard ERC20 Token + EIP 2612
 /// @notice Gas efficient & error friendly ERC20 implementation.
 /// @author Pedro Maia (https://github.com/pedrommaiaa/Burn)
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
 /// @author Modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol)
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
-abstract contract ERC20 {
+abstract contract ERC20Permit {
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -153,6 +155,39 @@ abstract contract ERC20 {
     /*//////////////////////////////////////////////////////////////
                              EIP-2612 LOGIC
     //////////////////////////////////////////////////////////////*/
+
+    
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual returns (bytes32) {
+        if (block.timestamp > deadline) revert Permit_deadline_expired();
+
+        bytes32 structHash = keccak256(
+            abi.encode(
+                keccak256(
+                    "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+                ),
+                owner,
+                spender,
+                value,
+                nonces[owner]++,
+                deadline
+            )
+        );
+
+        return structHash;
+    }
+
+
+    function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
+        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : computeDomainSeparator();
+    }
 
     function computeDomainSeparator() internal view virtual returns (bytes32) {
         return
