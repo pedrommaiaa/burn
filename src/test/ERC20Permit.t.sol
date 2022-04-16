@@ -31,8 +31,10 @@ contract ERC20Test is DSTestPlus {
             )
         );
 
+        token.permit(owner, address(0xDCBA), 1e18, block.timestamp, v, r, s);
 
-        emit log_bytes32(token.permit(owner, address(0xDCBA), 1e18, block.timestamp, v, r, s));
+        assertEq(token.allowance(owner, address(0xDCBA)), 1e18);
+        assertEq(token.nonces(owner), 1);
     }
 
 }

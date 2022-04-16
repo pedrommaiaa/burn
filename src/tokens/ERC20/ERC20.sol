@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity >=0.8.4 < 0.9.0;
+pragma solidity >=0.8.4 <0.9.0;
 
 error InsufficiantBalance(address user, uint256 amount);
 error ApproveSpenderZeroAddress();
@@ -22,7 +22,11 @@ abstract contract ERC20 {
 
     event Transfer(address indexed from, address indexed to, uint256 amount);
 
-    event Approval(address indexed owner, address indexed spender, uint256 amount);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 amount
+    );
 
     /*//////////////////////////////////////////////////////////////
                             METADATA STORAGE
@@ -49,10 +53,10 @@ abstract contract ERC20 {
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Sets the values for {name} and {symbol}.
-    /// 
+    ///
     /// The default value of {decimals} is 18. To select a different value for
     /// {decimals} you should overload it.
-    /// 
+    ///
     /// All two of these values are immutable: they can only be set once during
     /// construction.
     constructor(string memory name_, string memory symbol_) {
@@ -70,10 +74,14 @@ abstract contract ERC20 {
     ///      race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
     ///      https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
     /// @param spender address, the address which will spend the funds.
-    /// @param amount uint256, the amount of tokens to be spent. 
-    function approve(address spender, uint256 amount) public virtual returns (bool) {
+    /// @param amount uint256, the amount of tokens to be spent.
+    function approve(address spender, uint256 amount)
+        public
+        virtual
+        returns (bool)
+    {
         if (spender == address(0)) revert ApproveSpenderZeroAddress();
-        
+
         allowance[msg.sender][spender] = amount;
 
         emit Approval(msg.sender, spender, amount);
@@ -84,14 +92,18 @@ abstract contract ERC20 {
     /// @dev Transfer token for a specified address
     /// @param to address, the address to transfer to.
     /// @param amount uint256, the amount to be transferred.
-    function transfer(address to, uint256 amount) public virtual returns (bool) {
+    function transfer(address to, uint256 amount)
+        public
+        virtual
+        returns (bool)
+    {
         if (to == address(0)) revert TransferToZeroAddress();
 
         uint256 toBalance = balanceOf[msg.sender];
         if (toBalance < amount) revert InsufficiantBalance(msg.sender, amount);
 
-        // Cannot {over/under}flow because `msg.sender` 
-        // balance was already checked and the sum of 
+        // Cannot {over/under}flow because `msg.sender`
+        // balance was already checked and the sum of
         // all user balances can't exceed the max uint256 value.
         unchecked {
             balanceOf[msg.sender] = toBalance - amount;
@@ -119,16 +131,17 @@ abstract contract ERC20 {
 
         if (allowed < amount) revert InsufficientAllowance();
 
-        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
+        if (allowed != type(uint256).max)
+            allowance[from][msg.sender] = allowed - amount;
 
         uint256 fromBalance = balanceOf[from];
         if (fromBalance < amount) revert InsufficiantBalance(from, amount);
 
-        // Cannot {over/under}flow because `msg.sender` 
-        // balance was already checked and the sum of 
+        // Cannot {over/under}flow because `msg.sender`
+        // balance was already checked and the sum of
         // all user balances can't exceed the max uint256 value.
         unchecked {
-            balanceOf[from] = fromBalance - amount;   
+            balanceOf[from] = fromBalance - amount;
             balanceOf[to] += amount;
         }
 
@@ -147,7 +160,7 @@ abstract contract ERC20 {
     /// @param amount uint256, the amount that will be created.
     function _mint(address to, uint256 amount) internal virtual {
         if (to == address(0)) revert MintZeroAddress();
-        
+
         totalSupply += amount;
 
         // Cannot overflow because the sum of all user
