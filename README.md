@@ -3,8 +3,8 @@
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 
-Burn is the bridge between [Solmate](https://github.com/Rari-Capital/solmate)'s optimizations 
-and [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)'s user-friendliness.
+Unconventional contracts for unconventional projects.
+
 
 ## Development
 
@@ -17,13 +17,6 @@ make build
 ```bash
 make test
 ```
-
-## Acknowledgements
-
-- [femplate](https://github.com/abigger87/femplate)
-- [foundry](https://github.com/gakonst/foundry)
-- [solmate](https://github.com/Rari-Capital/solmate)
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ## Disclaimer
 
