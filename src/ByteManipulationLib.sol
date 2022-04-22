@@ -48,4 +48,28 @@ library ByteManipulationLib {
             )
         }
     }
+
+    /// @notice Returns the byte from the slice at a given index.
+    /// @param _slice Slice, the slice.
+    /// @param index uint256, the index.
+    /// @return _byte byte, The byte at that index. 
+    function index(Slice memory _slice, uint256 index) internal pure returns (bytes memory _byte) {
+        require(_slice.length >= index, "Index out of bounds.");
+
+        // Returns the byte in the slice at index, _byte = slice[index]
+
+    }
+    
+    /// @notice Returns the byte from the slice at a given index.
+    /// @param _slice Slice, the slice.
+    /// @param index int256, the index.
+    /// @return _byte byte, The byte at that index. 
+    function index(Slice memory _slice, int256 index) internal pure returns (bytes memory _byte) {
+        if (index >= 0) return index(_slice, uint256(index));
+
+        require(_slice.length >= index, "Index out of bounds.");
+
+        // Returns the byte in the slice at index, _byte = slice[index]
+
+    }
 }
