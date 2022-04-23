@@ -3,6 +3,7 @@ pragma solidity >=0.8.0;
 
 /// @notice Working with bytes.
 library ByteManipulationLib {
+  
 
     struct Slice {
         uint256 memPtr; // Memory address of the first byte.
@@ -52,24 +53,37 @@ library ByteManipulationLib {
     /// @notice Returns the byte from the slice at a given index.
     /// @param _slice Slice, the slice.
     /// @param index uint256, the index.
-    /// @return _byte byte, The byte at that index. 
-    function index(Slice memory _slice, uint256 index) internal pure returns (bytes memory _byte) {
+    /// @return bts bytes, The byte at that index. 
+    function index(Slice memory _slice, uint256 index) internal pure returns (bytes memory bts) {
         require(_slice.length >= index, "Index out of bounds.");
 
-        // Returns the byte in the slice at index, _byte = slice[index]
+        uint256 bb;
+        
+        assembly {
+            bb := mload(add(mload(_slice), index))
+        }
+        
+        bts = new bytes(1);
+        uint256 max = type(uint256).max;
+        uint256 data = bb & max << 31*8;
 
+        assembly {
+            mstore(add(bts, 32), data)
+        }
     }
-    
-    /// @notice Returns the byte from the slice at a given index.
-    /// @param _slice Slice, the slice.
-    /// @param index int256, the index.
-    /// @return _byte byte, The byte at that index. 
-    function index(Slice memory _slice, int256 index) internal pure returns (bytes memory _byte) {
-        if (index >= 0) return index(_slice, uint256(index));
 
-        require(_slice.length >= index, "Index out of bounds.");
 
-        // Returns the byte in the slice at index, _byte = slice[index]
 
+
+
+    /*//////////////////////////////////////////////////////////////
+                            CONVERSIONS 
+    //////////////////////////////////////////////////////////////*/
+
+
+    function toUint8(bytes memory _bytes) internal pure returns (uint8 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x1))
+        }
     }
 }
