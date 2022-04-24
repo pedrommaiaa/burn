@@ -1,4 +1,5 @@
-ByteManipulationLibTest:testCreateSlice() (gas: 798)
-ByteManipulationLibTest:testSliceCopy() (gas: 918)
-ByteManipulationLibTest:testSliceIsEqual() (gas: 811)
+ByteManipulationLibTest:testCreateSlice() (gas: 820)
+ByteManipulationLibTest:testSliceCopy() (gas: 873)
+ByteManipulationLibTest:testSliceIndex() (gas: 1529)
+ByteManipulationLibTest:testSliceIsEqual() (gas: 833)
 ByteManipulationLibTest:testSliceLength() (gas: 713)
