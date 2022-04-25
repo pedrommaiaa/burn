@@ -62,27 +62,45 @@ library ByteManipulationLib {
 
     /// @notice Returns the byte from the slice at a given index.
     /// @param _slice Slice, the slice.
-    /// @param index uint256, the index.
+    /// @param _index uint256, the index.
     /// @return bts bytes, The byte at that index.
-    function index(Slice memory _slice, uint256 index)
+    function index(Slice memory _slice, uint256 _index)
         internal
         pure
         returns (bytes memory bts)
     {
-        require(_slice.length >= index, "Index out of bounds.");
+        require(_slice.length >= _index, "Index out of bounds.");
 
         uint256 bb;
+        uint256 max = type(uint256).max;
 
         assembly {
-            bb := mload(add(mload(_slice), index))
+            bb := mload(add(mload(_slice), _index))
         }
 
-        bts = new bytes(1);
-        uint256 data = bb & (type(uint256).max << (31 * 8));
+        uint256 data = bb & (max << 248);
 
         assembly {
             mstore(add(bts, 32), data)
         }
+    }
+
+    /// @notice Returns the byte from the slice at a given index.
+    /// @param _slice Slice, the slice.
+    /// @param _index int256, the index.
+    /// @return bts bytes, The byte at that index.
+    function index(Slice memory _slice, int256 _index)
+        internal
+        pure
+        returns (bytes memory bts)
+    {
+        if (_index >= 0) return index(_slice, uint256(_index));
+
+        uint256 abs = uint256(-_index);
+
+        require(_slice.length >= abs, "Index out of bounds.");
+
+        return index(_slice, _slice.length - abs);
     }
 
     /*//////////////////////////////////////////////////////////////

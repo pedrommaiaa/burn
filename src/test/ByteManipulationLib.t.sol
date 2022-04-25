@@ -96,9 +96,27 @@ contract ByteManipulationLibTest is DSTestPlus {
 
         ByteManipulationLib.Slice memory slice = bts.slice();
 
-        assertEq(slice.index(0).toUint8(), 0x07);
-        assertEq(slice.index(1).toUint8(), 0x08);
-        assertEq(slice.index(2).toUint8(), 0x09);
+        assertEq(slice.index(uint256(0)).toUint8(), 0x07);
+        assertEq(slice.index(uint256(1)).toUint8(), 0x08);
+        assertEq(slice.index(uint256(2)).toUint8(), 0x09);
+    }
+    
+    function testSliceSignedIndex() public {
+        bytes memory bts = new bytes(3);
+        bts[0] = 0x07;
+        bts[1] = 0x08;
+        bts[2] = 0x09;
+        uint256 memPtr;
+        
+        assembly {
+            memPtr := add(bts, 0x20)
+        }
+
+        ByteManipulationLib.Slice memory slice = bts.slice();
+
+        assertEq(slice.index(int256(-3)).toUint8(), 0x07);
+        assertEq(slice.index(int256(-2)).toUint8(), 0x08);
+        assertEq(slice.index(int256(-1)).toUint8(), 0x09);
     }
 
 }
