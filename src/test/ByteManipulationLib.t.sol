@@ -11,7 +11,7 @@ contract ByteManipulationLibTest is DSTestPlus {
     using ByteManipulationLib for bytes;
     using ByteManipulationLib for ByteManipulationLib.Slice;
 
-    function testCreateSlice() public {
+    function testCreateSliceFromBytes() public {
         bytes memory bts = new bytes(3);
         bts[0] = 0x07;
         bts[1] = 0x08;
@@ -22,25 +22,19 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(bts, 0x20)
         }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(slice.memPtr, memPtr);
         assertEq(slice.length, bts.length);
     }
-
 
     function testSliceLength() public {
         bytes memory bts = new bytes(3);
         bts[0] = 0x07;
         bts[1] = 0x08;
         bts[2] = 0x09;
-        uint256 memPtr;
-        
-        assembly {
-            memPtr := add(bts, 0x20)
-        }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(bts.length, slice.length);
     }
@@ -56,67 +50,75 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(bts, 0x20)
         }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
         ByteManipulationLib.Slice memory slice2 = slice.copy();
 
         assertEq(slice.memPtr, slice2.memPtr);
         assertEq(slice.length, slice2.length);
     }
 
-
     function testSliceIsEqual() public {
         bytes memory bts = new bytes(3);
         bts[0] = 0x07;
         bts[1] = 0x08;
         bts[2] = 0x09;
-        uint256 memPtr;
-        
-        assembly {
-            memPtr := add(bts, 0x20)
-        }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
         ByteManipulationLib.Slice memory slice2 = slice.copy();
 
         assertTrue(slice.isEqual(slice2));
 
     }
 
-
     function testSliceIndex() public {
         bytes memory bts = new bytes(3);
         bts[0] = 0x07;
         bts[1] = 0x08;
         bts[2] = 0x09;
-        uint256 memPtr;
-        
-        assembly {
-            memPtr := add(bts, 0x20)
-        }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(slice.index(uint256(0)).toUint8(), 0x07);
         assertEq(slice.index(uint256(1)).toUint8(), 0x08);
         assertEq(slice.index(uint256(2)).toUint8(), 0x09);
     }
     
-    function testSliceSignedIndex() public {
+    function testSliceIndexSigned() public {
         bytes memory bts = new bytes(3);
         bts[0] = 0x07;
         bts[1] = 0x08;
         bts[2] = 0x09;
-        uint256 memPtr;
-        
-        assembly {
-            memPtr := add(bts, 0x20)
-        }
 
-        ByteManipulationLib.Slice memory slice = bts.slice();
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
-        assertEq(slice.index(int256(-3)).toUint8(), 0x07);
-        assertEq(slice.index(int256(-2)).toUint8(), 0x08);
-        assertEq(slice.index(int256(-1)).toUint8(), 0x09);
+        assertEq(slice.index(-3).toUint8(), 0x07);
+        assertEq(slice.index(-2).toUint8(), 0x08);
+        assertEq(slice.index(-1).toUint8(), 0x09);
     }
+    
+    function testSliceSetIndex() public {
+        bytes memory bts = new bytes(3);
+        bts[0] = 0x07;
+        bts[1] = 0x08;
+        bts[2] = 0x09;
 
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+
+        slice.set(uint256(0), 0x01);
+
+        assertEq(slice.index(uint256(0)).toUint8(), 0x01);
+    }
+    
+    function testSliceSetIndexSigned() public {
+        bytes memory bts = new bytes(3);
+        bts[0] = 0x07;
+        bts[1] = 0x08;
+        bts[2] = 0x09;
+
+        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+
+        slice.set(-3, 0x01);
+
+        assertEq(slice.index(-3).toUint8(), 0x01);
+    }
 }

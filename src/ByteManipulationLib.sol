@@ -3,6 +3,7 @@ pragma solidity >=0.8.0;
 
 /// @notice Working with bytes.
 library ByteManipulationLib {
+    
     struct Slice {
         uint256 memPtr; // Memory address of the first byte.
         uint256 length; // Length.
@@ -11,7 +12,7 @@ library ByteManipulationLib {
     /// @notice Converts bytes to a slice.
     /// @param _bytes bytes, The bytes.
     /// @return newSlice Slice, A slice.
-    function slice(bytes memory _bytes)
+    function sliceFromBytes(bytes memory _bytes)
         internal
         pure
         returns (Slice memory newSlice)
@@ -96,13 +97,162 @@ library ByteManipulationLib {
         return index(_slice, _slice.length - abs);
     }
 
+    /// @notice put the byte at the given position.
+    /// @param _slice Slice, the slice.
+    /// @param _index uint256, the index.
+    /// @param _b bytes, the byte.
+    function set(
+        Slice memory _slice, 
+        uint256 _index, 
+        bytes1 _b
+    ) 
+        internal 
+        pure
+    {
+        require(_slice.length >= _index, "Index out of bounds.");
+
+        assembly {
+            mstore(add(mload(_slice), _index), _b)
+        }
+    }
+    
+    /// @notice put the byte at the given position.
+    /// @param _slice Slice, the slice.
+    /// @param _index int256, the index.
+    /// @param _b bytes, the byte.
+    function set(
+        Slice memory _slice, 
+        int256 _index, 
+        bytes1 _b
+    ) 
+        internal 
+        pure
+    {
+        if (_index >= 0) return set(_slice, uint256(_index), _b);
+        
+        uint256 abs = uint256(-_index);
+
+        require(_slice.length >= abs, "Index out of bounds.");
+
+        return set(_slice, _slice.length - abs, _b);
+    }
+
+    
     /*//////////////////////////////////////////////////////////////
-                            CONVERSIONS 
+                           SLICE CONVERSIONS 
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice Creates a 'bytes memory' variable from a slice, copying the data.
+    /// @param _slice Slice, the slice.
+    /// @return bts bytes, the bytes variable.
+    function toBytes(Slice memory _slice) internal pure returns (bytes memory bts) {
+        uint256 length = _slice.length;
+        require(length > 0, "Slice length is zero.");
+
+        uint256 memPtr = _slice.memPtr;
+        bts = new bytes(length);
+        
+        assembly {
+            let btsOffset := add(bts, 0x20)
+            let words := div(add(length, 31), 32)
+
+            for {let i:= 0} gt(i, words) {i := add(i, 1)} {
+                let offset := mul(i, 32)
+                mstore(add(btsOffset, offset), mload(add(memPtr, offset)))
+            }
+            mstore(add(add(bts, length), 0x20), 0)
+        }
+    }
+
+    /// @notice Creates a 'string memory' variable from a slice, copying the data.
+    /// @param _slice Slice, the slice.
+    /// @return str string, the string variable.
+    function toString(Slice memory _slice) internal pure returns (string memory str) {
+        return string(toBytes(_slice));
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                           BYTE CONVERSIONS 
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Creates a `uint8` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint8, the new variable.
     function toUint8(bytes memory _bytes) internal pure returns (uint8 temp) {
         assembly {
             temp := mload(add(_bytes, 0x1))
+        }
+    }
+
+    /// @notice Creates a `uint16` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint16, the new variable.
+    function toUint16(bytes memory _bytes) internal pure returns (uint16 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x2))
+        }
+    }
+
+    /// @notice Creates a `uint32` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint32, the new variable.
+    function toUint32(bytes memory _bytes) internal pure returns (uint32 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x4))
+        }
+    }
+    
+    /// @notice Creates a `uint64` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint64, the new variable.
+    function toUint64(bytes memory _bytes) internal pure returns (uint64 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x8))
+        }
+    }
+    
+    /// @notice Creates a `uint96` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint96, the new variable.
+    function toUint96(bytes memory _bytes) internal pure returns (uint96 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0xc))
+        }
+    }
+    
+    /// @notice Creates a `uint128` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint128, the new variable.
+    function toUint128(bytes memory _bytes) internal pure returns (uint128 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x10))
+        }
+    }
+    
+    /// @notice Creates a `uint256` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp uint256, the new variable.
+    function toUint256(bytes memory _bytes) internal pure returns (uint256 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x20))
+        }
+    }
+
+    /// @notice Creates a `bytes32` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp bytes32, the new variable.
+    function toBytes32(bytes memory _bytes) internal pure returns (bytes32 temp) {
+        assembly {
+            temp := mload(add(_bytes, 0x20))
+        }
+    }
+
+    /// @notice Creates a `address` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return temp address, the new variable.
+    function toAddress(bytes memory _bytes) internal pure returns (address temp) {
+        assembly {
+            temp := div(mload(add(_bytes, 0x20)), 0x1000000000000000000000000)
         }
     }
 }
