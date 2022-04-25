@@ -71,17 +71,10 @@ library ByteManipulationLib {
     {
         require(_slice.length >= _index, "Index out of bounds.");
 
-        uint256 bb;
-        uint256 max = type(uint256).max;
-
         assembly {
-            bb := mload(add(mload(_slice), _index))
-        }
-
-        uint256 data = bb & (max << 248);
-
-        assembly {
-            mstore(add(bts, 32), data)
+            let bb := mload(add(mload(_slice), _index))
+            bb := and(bb, shl(248, not(0)))
+            mstore(add(bts, 32), bb)
         }
     }
 
