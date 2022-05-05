@@ -3,13 +3,15 @@ pragma solidity >=0.8.0;
 
 import {DSTestPlus} from "./utils/DSTestPlus.sol";
 
+import {SliceManipulationLib} from "../SliceManipulationLib.sol";
 import {ByteManipulationLib} from "../ByteManipulationLib.sol";
 
 
-contract ByteManipulationLibTest is DSTestPlus {
+contract SliceManipulationLibTest is DSTestPlus {
 
+    using SliceManipulationLib for bytes;
     using ByteManipulationLib for bytes;
-    using ByteManipulationLib for ByteManipulationLib.Slice;
+    using SliceManipulationLib for SliceManipulationLib.Slice;
 
     function testCreateSliceFromBytes() public {
         bytes memory bts = new bytes(3);
@@ -22,7 +24,7 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(bts, 0x20)
         }
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(slice.memPtr, memPtr);
         assertEq(slice.length, bts.length);
@@ -40,7 +42,7 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(add(bts, 0x20), index)
         }
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes(index);
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes(index);
 
         assertEq(slice.length, bts.length - 1);
         assertEq(slice.memPtr, memPtr);
@@ -60,7 +62,7 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(add(bts, 0x20), add(length, index))
         }
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes(index);
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes(index);
 
         assertEq(slice.length, length - 1);
         assertEq(slice.memPtr, memPtr);
@@ -75,7 +77,7 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(bts.length, slice.length);
     }
@@ -91,8 +93,8 @@ contract ByteManipulationLibTest is DSTestPlus {
             memPtr := add(bts, 0x20)
         }
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
-        ByteManipulationLib.Slice memory slice2 = slice.copy();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice2 = slice.copy();
 
         assertEq(slice.memPtr, slice2.memPtr);
         assertEq(slice.length, slice2.length);
@@ -104,8 +106,8 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
-        ByteManipulationLib.Slice memory slice2 = slice.copy();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice2 = slice.copy();
 
         assertTrue(slice.isEqual(slice2));
 
@@ -117,7 +119,7 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(slice.index(uint256(0)).toUint8(), 0x07);
         assertEq(slice.index(uint256(1)).toUint8(), 0x08);
@@ -130,7 +132,7 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         assertEq(slice.index(-3).toUint8(), 0x07);
         assertEq(slice.index(-2).toUint8(), 0x08);
@@ -143,7 +145,7 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         slice.set(uint256(0), 0x01);
 
@@ -156,7 +158,7 @@ contract ByteManipulationLibTest is DSTestPlus {
         bts[1] = 0x08;
         bts[2] = 0x09;
 
-        ByteManipulationLib.Slice memory slice = bts.sliceFromBytes();
+        SliceManipulationLib.Slice memory slice = bts.sliceFromBytes();
 
         slice.set(-3, 0x01);
 
