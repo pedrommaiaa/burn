@@ -66,11 +66,7 @@ library ByteManipulationLib {
     /// @notice Creates a `uint128` variable from bytes.
     /// @param _bytes bytes, the bytes.
     /// @return temp uint128, the new variable.
-    function toUint128(bytes memory _bytes)
-        internal
-        pure
-        returns (uint128 temp)
-    {
+    function toUint128(bytes memory _bytes) internal pure returns (uint128 temp) {
         assembly {
             temp := mload(add(_bytes, 0x10))
         }
@@ -79,11 +75,7 @@ library ByteManipulationLib {
     /// @notice Creates a `uint256` variable from bytes.
     /// @param _bytes bytes, the bytes.
     /// @return temp uint256, the new variable.
-    function toUint256(bytes memory _bytes)
-        internal
-        pure
-        returns (uint256 temp)
-    {
+    function toUint256(bytes memory _bytes) internal pure returns (uint256 temp) {
         assembly {
             temp := mload(add(_bytes, 0x20))
         }
@@ -92,11 +84,7 @@ library ByteManipulationLib {
     /// @notice Creates a `bytes32` variable from bytes.
     /// @param _bytes bytes, the bytes.
     /// @return temp bytes32, the new variable.
-    function toBytes32(bytes memory _bytes)
-        internal
-        pure
-        returns (bytes32 temp)
-    {
+    function toBytes32(bytes memory _bytes) internal pure returns (bytes32 temp) {
         assembly {
             temp := mload(add(_bytes, 0x20))
         }
@@ -105,13 +93,19 @@ library ByteManipulationLib {
     /// @notice Creates a `address` variable from bytes.
     /// @param _bytes bytes, the bytes.
     /// @return temp address, the new variable.
-    function toAddress(bytes memory _bytes)
-        internal
-        pure
-        returns (address temp)
-    {
+    function toAddress(bytes memory _bytes) internal pure returns (address temp) {
         assembly {
             temp := div(mload(add(_bytes, 0x20)), 0x1000000000000000000000000)
         }
+    }
+
+    /// @notice Creates a `string` variable from bytes.
+    /// @param _bytes bytes, the bytes.
+    /// @return The new variable.
+    function toString(bytes memory _bytes) internal pure returns (string memory) {
+        assembly {
+            _bytes := add(_bytes, 0x04)
+        }
+        return abi.decode(_bytes, (string));
     }
 }
