@@ -95,7 +95,7 @@ library ByteManipulationLib {
     /// @return temp address, the new variable.
     function toAddress(bytes memory _bytes) internal pure returns (address temp) {
         assembly {
-            temp := div(mload(add(_bytes, 0x20)), 0x1000000000000000000000000)
+            temp := mload(add(_bytes, 32))
         }
     }
 
